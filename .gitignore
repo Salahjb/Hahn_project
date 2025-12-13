@@ -1,0 +1,19 @@
+# --- Maven / Java Build ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- IDE Settings ---
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+
+# --- Wrapper (Optional: Keep these if you want the wrapper, remove if not) ---
+!mvnw
+!mvnw.cmd
+!.mvn/wrapper/maven-wrapper.properties
+hahn_backend/src/main/java/com/hahn/backend/README.md
