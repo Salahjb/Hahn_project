@@ -17,3 +17,4 @@ target/
 !mvnw.cmd
 !.mvn/wrapper/maven-wrapper.properties
 hahn_backend/src/main/java/com/hahn/backend/README.md
+hahn_backend/src/main/resources/application.properties
