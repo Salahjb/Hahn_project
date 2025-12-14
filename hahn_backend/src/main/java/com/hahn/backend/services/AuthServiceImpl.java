@@ -7,6 +7,7 @@ import com.hahn.backend.dto.response.UserDto;
 import com.hahn.backend.entities.User;
 import com.hahn.backend.exceptions.UserAlreadyExistsException;
 import com.hahn.backend.repositories.UserRepository;
+import com.hahn.backend.util.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EntityMapper mapper;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -37,16 +39,12 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         String token = jwtService.generateToken(mapToUserDetails(user));
 
-        UserDto userDto = UserDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build() ;
 
-        return new AuthResponse(token, userDto);
+        return new AuthResponse(token, mapper.toUserDto(savedUser));
     }
 
     @Override
@@ -63,12 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(mapToUserDetails(user));
 
-        UserDto userDto = UserDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .build() ;
-
-        return new AuthResponse(token, userDto);
+        return new AuthResponse(token, mapper.toUserDto(user));
     }
 
     private UserDetails mapToUserDetails(User user) {

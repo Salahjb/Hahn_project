@@ -2,9 +2,11 @@ package com.hahn.backend.util;
 
 import com.hahn.backend.dto.response.ProjectDto;
 import com.hahn.backend.dto.response.TaskDto;
+import com.hahn.backend.dto.response.UserDto;
 import com.hahn.backend.entities.Project;
 import com.hahn.backend.entities.Task;
 import com.hahn.backend.entities.TaskStatus;
+import com.hahn.backend.entities.User;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -14,13 +16,19 @@ public class EntityMapper {
 
     public TaskDto toTaskDto(Task task) {
         return TaskDto.builder()
-                .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .dueDate(task.getDueDate())
                 .status(task.getStatus())
                 .projectId(task.getProject().getId())
                 .build();
+    }
+
+    public UserDto toUserDto(User user ){
+        return UserDto.builder()
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .build() ;
     }
 
     public ProjectDto toProjectDto(Project project) {
@@ -43,7 +51,6 @@ public class EntityMapper {
 
         // 3. Build the DTO
         return ProjectDto.builder()
-                .id(project.getId())
                 .title(project.getTitle())
                 .description(project.getDescription())
                 .createdAt(project.getCreatedAt())
