@@ -1,6 +1,7 @@
 package com.hahn.backend.config;
 
 import com.hahn.backend.repositories.UserRepository;
+import com.hahn.backend.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,14 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     @Bean
@@ -34,16 +33,38 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Allow Login and Register to be accessed without a token
                         .requestMatchers("/api/auth/**").permitAll()
-                        // All other requests require a token
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                // Manually add the filter bean created below
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    // === 1. THE BRIDGE: Convert your Entity to Spring UserDetails ===
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            // Fetch YOUR Entity
+            com.hahn.backend.entities.User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            // Return SPRING'S User (implements UserDetails)
+            return org.springframework.security.core.userdetails.User.builder()
+                    .username(user.getEmail())
+                    .password(user.getPassword())
+                    .roles("USER") // Simple role for now
+                    .build();
+        };
+    }
+
+    // === 2. MANUAL FILTER CREATION (No Circular Dependency) ===
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtService, userDetailsService());
     }
 
     @Bean
@@ -54,25 +75,13 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // THIS IS THE KEY: It connects Spring Security to the Database
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .map(user -> new org.springframework.security.core.userdetails.User(
-                        user.getEmail(),
-                        user.getPassword(),
-                        new ArrayList<>() // Authorities (Roles) - Empty for now
-                ))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 }
