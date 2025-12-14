@@ -1,6 +1,6 @@
 package com.hahn.backend.services;
 
-import com.hahn.backend.dto.responce.TaskDto;
+import com.hahn.backend.dto.response.TaskDto;
 import com.hahn.backend.entities.TaskStatus;
 import java.util.List;
 

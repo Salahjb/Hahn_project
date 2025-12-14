@@ -1,6 +1,6 @@
 package com.hahn.backend.services;
 
-import com.hahn.backend.dto.responce.ProjectDto;
+import com.hahn.backend.dto.response.ProjectDto;
 import com.hahn.backend.entities.Project;
 import com.hahn.backend.entities.User;
 import com.hahn.backend.exceptions.ResourceNotFoundException;

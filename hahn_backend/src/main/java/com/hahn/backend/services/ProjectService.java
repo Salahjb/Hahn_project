@@ -1,6 +1,6 @@
 package com.hahn.backend.services;
 
-import com.hahn.backend.dto.responce.ProjectDto;
+import com.hahn.backend.dto.response.ProjectDto;
 
 import java.util.List;
 
