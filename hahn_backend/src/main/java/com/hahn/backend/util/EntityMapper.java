@@ -16,6 +16,7 @@ public class EntityMapper {
 
     public TaskDto toTaskDto(Task task) {
         return TaskDto.builder()
+                .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .dueDate(task.getDueDate())
@@ -32,7 +33,7 @@ public class EntityMapper {
     }
 
     public ProjectDto toProjectDto(Project project) {
-        // 1. Calculate the stats
+        //  Calculate the stats
         int total = project.getTasks() != null ? project.getTasks().size() : 0;
 
         long completedCount = project.getTasks() != null ?
@@ -40,17 +41,17 @@ public class EntityMapper {
                         .filter(t -> t.getStatus() == TaskStatus.COMPLETED)
                         .count() : 0;
 
-        // Avoid division by zero!
         double progressPercentage = (total == 0) ? 0.0 : ((double) completedCount / total) * 100;
 
-        // 2. Map the tasks (if you want them included in the project view)
+        // Map the tasks
         var taskDtos = project.getTasks() == null ? null :
                 project.getTasks().stream()
                         .map(this::toTaskDto)
                         .collect(Collectors.toList());
 
-        // 3. Build the DTO
+        //  Build the DTO
         return ProjectDto.builder()
+                .id(project.getId())
                 .title(project.getTitle())
                 .description(project.getDescription())
                 .createdAt(project.getCreatedAt())

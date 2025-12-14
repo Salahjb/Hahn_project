@@ -4,12 +4,14 @@ import com.hahn.backend.dto.response.TaskDto;
 import com.hahn.backend.entities.Project;
 import com.hahn.backend.entities.Task;
 import com.hahn.backend.entities.TaskStatus;
+import com.hahn.backend.exceptions.AccessDeniedException;
 import com.hahn.backend.exceptions.ResourceNotFoundException;
 import com.hahn.backend.repositories.ProjectRepository;
 import com.hahn.backend.repositories.TaskRepository;
 import com.hahn.backend.util.EntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,9 +25,15 @@ public class TaskServiceImpl implements TaskService {
     private final EntityMapper mapper;
 
     @Override
-    public TaskDto createTask(Long projectId, TaskDto request) {
+    @Transactional
+    public TaskDto createTask(Long projectId, TaskDto request, String userEmail) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
+
+        // SECURITY: Only the Project Owner can add tasks
+        if (!project.getUser().getEmail().equals(userEmail)) {
+            throw new AccessDeniedException("You are not authorized to add tasks to this project");
+        }
 
         Task task = Task.builder()
                 .title(request.getTitle())
@@ -40,36 +48,52 @@ public class TaskServiceImpl implements TaskService {
         return mapper.toTaskDto(savedTask);
     }
 
-
     @Override
-    public List<TaskDto> getTasksByProject(Long projectId) {
+    @Transactional(readOnly = true)
+    public List<TaskDto> getTasksByProject(Long projectId, String userEmail) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
-        if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("Project not found with id: " + projectId);
+        // SECURITY: Only owner can view tasks
+        if (!project.getUser().getEmail().equals(userEmail)) {
+            throw new AccessDeniedException("You are not authorized to view these tasks");
         }
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
 
-        return tasks.stream()
+        return taskRepository.findByProjectId(projectId).stream()
                 .map(mapper::toTaskDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public TaskDto updateTaskStatus(Long taskId, TaskStatus status) {
+    @Transactional
+    public TaskDto updateTask(Long taskId, TaskDto request, String userEmail) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + taskId));
-        task.setStatus(status);
 
-        Task updatedTask = taskRepository.save(task);
+        // SECURITY: Navigation Check (Task -> Project -> User)
+        if (!task.getProject().getUser().getEmail().equals(userEmail)) {
+            throw new AccessDeniedException("You are not authorized to update this task");
+        }
 
-        return mapper.toTaskDto(updatedTask);
+        if (request.getTitle() != null) task.setTitle(request.getTitle());
+        if (request.getDescription() != null) task.setDescription(request.getDescription());
+        if (request.getDueDate() != null) task.setDueDate(request.getDueDate());
+        if (request.getStatus() != null) task.setStatus(request.getStatus());
+
+        return mapper.toTaskDto(taskRepository.save(task));
     }
 
     @Override
-    public void deleteTask(Long taskId) {
-        if (!taskRepository.existsById(taskId)) {
-            throw new ResourceNotFoundException("Task not found with id: " + taskId);
+    @Transactional
+    public void deleteTask(Long id, String userEmail) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        // SECURITY: Check ownership
+        if (!task.getProject().getUser().getEmail().equals(userEmail)) {
+            throw new AccessDeniedException("You are not authorized to delete this task");
         }
-        taskRepository.deleteById(taskId);
+
+        taskRepository.delete(task);
     }
 }

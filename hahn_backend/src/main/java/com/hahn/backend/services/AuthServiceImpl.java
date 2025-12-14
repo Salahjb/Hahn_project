@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final EntityMapper mapper;
 
     @Override
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
@@ -37,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .username(request.getUsername())
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -48,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public AuthResponse login(LoginRequest request) {
         //  AUTOMATICALLY throws BadCredentialsException if password is wrong
         authenticationManager.authenticate(

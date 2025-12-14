@@ -35,23 +35,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-        // 1. Check if token exists
+        // Check if token exists
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 2. Extract Token
+        //  Extract Token
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
 
         // 3. Check if user is not already authenticated
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // 4. Load User from DB
+            // Load User from DB
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            // 5. Validate Token
+            // Validate Token
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 6. Set Authentication in Context
+                // Set Authentication in Context
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

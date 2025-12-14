@@ -1,19 +1,18 @@
 package com.hahn.backend.services;
 
 import com.hahn.backend.dto.response.TaskDto;
-import com.hahn.backend.entities.TaskStatus;
+
 import java.util.List;
 
 public interface TaskService {
-    // Add a task to a specific project
-    TaskDto createTask(Long projectId, TaskDto request);
 
-    // List all tasks for a project
-    List<TaskDto> getTasksByProject(Long projectId);
+    //create a task linked to the Project owner (user) ...
+    TaskDto createTask(Long projectId, TaskDto request, String userEmail);
 
-    // Mark a task as COMPLETED or PENDING
-    TaskDto updateTaskStatus(Long taskId, TaskStatus status);
+    //get the tasks linked to a given Project
+    List<TaskDto> getTasksByProject(Long projectId, String userEmail);
 
-    // Remove a task
-    void deleteTask(Long taskId);
+    TaskDto updateTask(Long taskId, TaskDto request, String userEmail);
+
+    void deleteTask(Long id, String userEmail);
 }
