@@ -1,7 +1,7 @@
 package com.hahn.backend.util;
 
-import com.hahn.backend.dto.responce.ProjectDto;
-import com.hahn.backend.dto.responce.TaskDto;
+import com.hahn.backend.dto.response.ProjectDto;
+import com.hahn.backend.dto.response.TaskDto;
 import com.hahn.backend.entities.Project;
 import com.hahn.backend.entities.Task;
 import com.hahn.backend.entities.TaskStatus;

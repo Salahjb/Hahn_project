@@ -1,4 +1,4 @@
-package com.hahn.backend.dto.responce;
+package com.hahn.backend.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

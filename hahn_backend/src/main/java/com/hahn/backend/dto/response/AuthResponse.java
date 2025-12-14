@@ -1,4 +1,4 @@
-package com.hahn.backend.dto.responce;
+package com.hahn.backend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthResponse {
     private String token ;
-    private String email ;
+    private UserDto userDto ;
 }
