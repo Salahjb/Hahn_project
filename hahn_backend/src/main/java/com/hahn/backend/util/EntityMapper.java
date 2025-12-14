@@ -57,7 +57,7 @@ public class EntityMapper {
                 .createdAt(project.getCreatedAt())
                 .totalTasks(total)
                 .completedTasks((int) completedCount)
-                .progress(progressPercentage) // <--- Requirement Met Here!
+                .progress(progressPercentage)
                 .tasks(taskDtos)
                 .build();
     }
