@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Builder
 public class ProjectDto {
+    private Long id;
     private String title;
     private String description;
     private LocalDateTime createdAt;

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class TaskDto {
+    private Long id ;
     private String title;
     private String description;
     private LocalDateTime dueDate;
