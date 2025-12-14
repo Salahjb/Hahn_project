@@ -54,7 +54,7 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // THIS IS THE KEY: It connects Spring Security to your Database
+    // THIS IS THE KEY: It connects Spring Security to the Database
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)

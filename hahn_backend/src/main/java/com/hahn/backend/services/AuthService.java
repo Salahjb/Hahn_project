@@ -1,6 +1,6 @@
 package com.hahn.backend.services;
 
-import com.hahn.backend.dto.responce.AuthResponse;
+import com.hahn.backend.dto.response.AuthResponse;
 import com.hahn.backend.dto.request.LoginRequest;
 import com.hahn.backend.dto.request.RegisterRequest;
 
