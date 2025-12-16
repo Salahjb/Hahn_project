@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(token, mapper.toUserDto(user));
     }
 
-    private UserDetails mapToUserDetails(User user) {
+    public UserDetails mapToUserDetails(User user) {
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
