@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -26,7 +26,7 @@ public class Task {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
