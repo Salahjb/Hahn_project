@@ -19,5 +19,5 @@ public class TaskDto {
     private String description;
     private LocalDate dueDate;
     private TaskStatus status;
-    private Long projectId; //  for the frontend to know which project this belongs to
+    private Long projectId;
 }

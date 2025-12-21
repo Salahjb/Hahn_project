@@ -54,7 +54,7 @@
 
         @Override
         @Transactional(readOnly = true)
-        //we keep this method in case of "Export All Tasks" button that doesn't use pagination ...
+        // we kept this method in case of "Export All Tasks" button that doesn't use pagination ...
         public List<TaskDto> getTasksByProject(Long projectId, String userEmail) {
             Project project = projectRepository.findById(projectId)
                     .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));

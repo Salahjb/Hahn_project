@@ -13,7 +13,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task>  findByProjectId(Long projectId);
 
-    // NEW METHOD for Pagination/Search
+    // METHOD for Pagination/Search
     @Query("SELECT t FROM Task t WHERE t.project.id = :projectId " +
             "AND (:title IS NULL OR LOWER(t.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
             "AND (:status IS NULL OR t.status = :status)")

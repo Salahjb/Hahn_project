@@ -19,7 +19,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectDto> createProject(
             @RequestBody ProjectDto request,
-            Principal principal // <--- Spring automatically fills this
+            Principal principal
     ) {
         return ResponseEntity.ok(projectService.createProject(request, principal.getName()));
     }
@@ -52,6 +52,6 @@ public class ProjectController {
             Principal principal
     ) {
         projectService.deleteProject(id, principal.getName());
-        return ResponseEntity.noContent().build(); // Returns HTTP 204 (Success, No Body)
+        return ResponseEntity.noContent().build();
     }
 }

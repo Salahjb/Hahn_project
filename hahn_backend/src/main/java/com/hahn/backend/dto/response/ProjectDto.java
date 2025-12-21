@@ -19,6 +19,5 @@ public class ProjectDto {
     private int completedTasks;
     private double progress; // 0.0 to 100.0
 
-    // We can include the list of tasks inside the project detail view
     private List<TaskDto> tasks;
 }

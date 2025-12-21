@@ -30,7 +30,7 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TaskStatus status; // PENDING or COMPLETED
+    private TaskStatus status; // PENDING or COMPLETED or IN_PROGRESS
 
     // Relationship: Many Tasks -> One Project
     @ManyToOne(fetch = FetchType.LAZY)

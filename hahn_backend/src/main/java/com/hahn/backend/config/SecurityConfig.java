@@ -40,17 +40,14 @@ public class SecurityConfig {
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                // Manually add the filter bean created below
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // === 1. THE BRIDGE: Convert your Entity to Spring UserDetails ===
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            // Fetch YOUR Entity
             com.hahn.backend.entities.User user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -63,7 +60,6 @@ public class SecurityConfig {
         };
     }
 
-    // === 2. MANUAL FILTER CREATION (No Circular Dependency) ===
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtService, userDetailsService());

@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProjectDto getProjectById(Long id, String userEmail) { // UPDATED SIGNATURE
+    public ProjectDto getProjectById(Long id, String userEmail) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 
