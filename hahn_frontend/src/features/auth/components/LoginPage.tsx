@@ -95,7 +95,7 @@ export const LoginPage = () => {
                                         className={`block w-full pl-10 pr-3 py-3 border ${
                                             errors.username ? 'border-red-300 focus:border-red-500 focus:ring-red-100' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-100'
                                         } rounded-lg focus:ring-4 outline-none transition-all duration-200`}
-                                        placeholder="John Doe"
+                                        placeholder="testuser"
                                     />
                                 </div>
                                 {errors.username && (
